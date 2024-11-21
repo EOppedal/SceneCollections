@@ -42,6 +42,8 @@ public static class SceneCollectionManager {
 
 #if UNITY_EDITOR
     public static void LoadSceneCollectionEditor(SceneCollectionSO sceneCollectionSO) {
+        if (sceneCollectionSO.scenes.Length == 0) return;
+        
         ActiveScenes.Clear();
 
         EditorLoadScene(sceneCollectionSO.scenes.First(), false);
