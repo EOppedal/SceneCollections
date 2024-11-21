@@ -1,0 +1,11 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.erlend-eiken-oppedal.scenecollections/Editor/SceneCollectionViewer.uss?fileID=7433441132597879392&amp;guid=3c3c9a1af7f6de240ae5082639e3e518&amp;type=3#SceneCollectionViewer" />
+    <engine:VisualElement data-source-type="SceneCollectionSO, Assembly-CSharp" class="DebugLoggers" style="flex-grow: 1; max-width: 356px; min-width: 135px; flex-direction: column;">
+        <engine:VisualElement style="flex-grow: 1;">
+            <engine:Label text="MainMenu" name="Label" class="DebugLoggersLabel DebugLoggersField Font" />
+        </engine:VisualElement>
+        <engine:VisualElement style="flex-grow: 1;">
+            <engine:Button text="Load Collection" name="LoadCollectionButton" class="Font DebugLoggersField" style="margin-top: 5px; margin-right: 5px; margin-bottom: 5px; margin-left: 5px; padding-top: 11px; padding-right: 11px; padding-bottom: 11px; padding-left: 11px; height: 41px;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

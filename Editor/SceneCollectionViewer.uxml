@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.erlend-eiken-oppedal.scenecollections/Editor/SceneCollectionViewer.uss?fileID=7433441132597879392&amp;guid=3c3c9a1af7f6de240ae5082639e3e518&amp;type=3#SceneCollectionViewer" />
+    <engine:VisualElement style="flex-grow: 1; width: 100%; height: 100%;">
+        <engine:ScrollView>
+            <engine:Label text="Scene Collections" class="Label Font" style="font-size: 32%;" />
+            <engine:Button text="Update GUI" name="UpdateButton" class="UpdateButton Font" style="height: 21px;" />
+            <engine:ScrollView style="width: 100%; height: 100%;">
+                <engine:VisualElement name="SceneCollectionContainer" class="DebugLoggerContainer" />
+            </engine:ScrollView>
+        </engine:ScrollView>
+    </engine:VisualElement>
+</engine:UXML>

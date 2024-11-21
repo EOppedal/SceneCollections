@@ -1,0 +1,13 @@
+{
+  "name": "com.erlend-eiken-oppedal.scenecollections",
+  "version": "1.0.0",
+  "displayName": "Scene Collections",
+  "author": {
+    "name": "Erlend Eiken Oppedal",
+    "email": "erlend.oppedal@gmail.com"
+  },
+  "dependencies": {
+    "com.eflatun.scenereference": "https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
+    "com.erlend-eiken-oppedal.scrubutils": "https://github.com/EOppedal/ScrubUtils.git"
+  }
+}
