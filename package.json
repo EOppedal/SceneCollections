@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "com.eflatun.scenereference": "https://github.com/starikcetin/Eflatun.SceneReference.git#4.1.1",
-    "com.erlend-eiken-oppedal.scrubutils": "https://github.com/EOppedal/ScrubUtils.git"
+    "com.erlend-eiken-oppedal.scrubutils": "https://github.com/EOppedal/ScrubUtils.git",
+    "com.erlend-eiken-oppedal.extensionsandattributes": "https://github.com/EOppedal/ExtensionsAndAttributes.git"
   }
 }

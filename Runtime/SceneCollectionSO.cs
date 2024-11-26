@@ -3,20 +3,23 @@ using Eflatun.SceneReference;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-[CreateAssetMenu(fileName = nameof(SceneCollectionSO), menuName = "Scriptable Objects/Create " + nameof(SceneCollectionSO))]
+[CreateAssetMenu(
+    fileName = nameof(SceneCollectionSO), 
+    menuName = "Scriptable Objects/SceneCollections/Create " + nameof(SceneCollectionSO))]
 public class SceneCollectionSO : ScriptableObject {
     public SceneInstance[] scenes;
+    public SceneInstance[] notAllowedPersistentScenes;
 
     [ContextMenu(nameof(LoadSceneCollection))]
     public void LoadSceneCollection() {
 #if UNITY_EDITOR
-        if (Application.isEditor) {
+        if (!Application.isPlaying) {
             SceneCollectionManager.LoadSceneCollectionEditor(this);
             return;
         }
 #endif
         
-        _ = SceneCollectionManager.LoadSceneCollection(this);
+        _ = SceneCollectionManager.LoadSceneCollectionAsync(this);
     }
 
     [Serializable] public record SceneInstance {
