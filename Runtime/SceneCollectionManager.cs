@@ -15,16 +15,16 @@ public static class SceneCollectionManager {
         foreach (var sceneInstance in ActiveScenes.ToArray()) {
             if (sceneInstance.persistentScene) continue;
             if (sceneCollectionSO.scenes.Contains(sceneInstance) && !sceneInstance.getsReloadedWhenLoadedAgain) continue;
-
+        
             await SceneManager.UnloadSceneAsync(sceneInstance.BuildIndex);
-            Debug.Log("unloading: " + sceneInstance.Name);
+            Debug.Log($"[{nameof(SceneCollectionManager)}] Unloading: {sceneInstance.Name}");
             ActiveScenes.Remove(sceneInstance);
         }
 
         foreach (var sceneInstance in sceneCollectionSO.scenes) {
             if (!ActiveScenes.Contains(sceneInstance)) {
                 await SceneManager.LoadSceneAsync(sceneInstance.BuildIndex, LoadSceneMode.Additive);
-                Debug.Log("Loading: " + sceneInstance.Name);
+                Debug.Log($"[{nameof(SceneCollectionManager)}] Loading: {sceneInstance.Name}");
 
                 if (sceneInstance.persistentScene) {
                     PersistentScenes.Add(sceneInstance);
@@ -43,7 +43,7 @@ public static class SceneCollectionManager {
 #if UNITY_EDITOR
     public static void LoadSceneCollectionEditor(SceneCollectionSO sceneCollectionSO) {
         if (sceneCollectionSO.scenes.Length == 0) return;
-        
+
         ActiveScenes.Clear();
 
         EditorLoadScene(sceneCollectionSO.scenes.First(), false);
