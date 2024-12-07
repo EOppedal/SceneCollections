@@ -1,23 +1,43 @@
-using System.Threading.Tasks;
 using Attributes;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEngine.Assertions;
+#endif
 
 public class InitializationManager : MonoBehaviour {
     #region ---Fields---
     [Tooltip("NB! Should only be one scene!")]
-    [SerializeField, Required] private SceneCollectionSO thisSceneCollectionSO;
-    [SerializeField, Required] private SceneCollectionSO startSceneCollectionSO;
+    [SerializeField, Required] private SceneCollectionSO thisSceneCollection;
+    [SerializeField, Required] private SceneCollectionSO startSceneCollection;
     #endregion
 
     private void Start() {
-        _ = AwaitLoading();
-    }
+#if UNITY_EDITOR
+        Assert.IsNotNull(thisSceneCollection);
 
-    private async Task AwaitLoading() {
-        foreach (var sceneInstance in thisSceneCollectionSO.scenes) {
+        if (SceneCollectionManager.CurrentSceneCollection == null ||
+            SceneCollectionManager.CurrentSceneCollection != thisSceneCollection) {
+            SceneCollectionManager.CurrentSceneCollection = thisSceneCollection;
+        }
+#endif
+
+        SceneCollectionManager.ClearActiveScenes();
+
+        foreach (var sceneInstance in thisSceneCollection.scenes) {
             SceneCollectionManager.AddToActiveScenes(sceneInstance);
         }
-        
-        await SceneCollectionManager.LoadSceneCollectionAsync(startSceneCollectionSO);
+
+        Debug.Log("Loading initial scene collection...");
+
+        _ = SceneCollectionManager.LoadSceneCollectionAsync(startSceneCollection);
     }
+
+#if UNITY_EDITOR
+    [ContextMenu(nameof(DebugSceneCollection))]
+    public void DebugSceneCollection() {
+        if (SceneCollectionManager.CurrentSceneCollection == null) {
+            Debug.Log(nameof(SceneCollectionManager.CurrentSceneCollection) + " is null!");
+        }
+    }
+#endif
 }

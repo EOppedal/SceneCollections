@@ -27,9 +27,11 @@ public static class SceneCollectionManager {
 #if UNITY_EDITOR
             if (_sceneCollectionManagerSO == null) {
                 var so = ScriptableObject.CreateInstance<SceneCollectionManagerSO>();
+                
+                var folderPath = Path.Join(ResourcesPath, SOFolder);
 
-                if (!Directory.Exists(SOFolder)) {
-                    Directory.CreateDirectory(SOFolder);
+                if (!Directory.Exists(folderPath)) {
+                    Directory.CreateDirectory(folderPath);
                 }
 
                 var path = Path.Join(ResourcesPath, SOFolder, SOName) + ".asset";
@@ -47,7 +49,7 @@ public static class SceneCollectionManager {
     }
 
 #if UNITY_EDITOR
-    private static SceneCollectionSO _currentSceneCollectionSO;
+    public static SceneCollectionSO CurrentSceneCollection;
 #endif
 
     private static SceneCollectionManagerSO _sceneCollectionManagerSO;
@@ -57,14 +59,16 @@ public static class SceneCollectionManager {
     #endregion
 
     public static void AddToActiveScenes(SceneCollectionSO.SceneInstance scene) => ActiveScenes.Add(scene);
+    
+    public static void ClearActiveScenes() => ActiveScenes.Clear();
 
     public static async Task LoadSceneCollectionAsync(SceneCollectionSO sceneCollectionSO) {
 #if UNITY_EDITOR
         if (ActiveScenes.Count == 0) {
             Debug.LogWarning("*** No ActiveScenes! ***");
-            Debug.Log(_currentSceneCollectionSO != null);
+            Debug.Log(CurrentSceneCollection != null);
 
-            foreach (var sceneInstance in _currentSceneCollectionSO.scenes) {
+            foreach (var sceneInstance in CurrentSceneCollection.scenes) {
                 AddSceneInstanceToLists(sceneInstance);
             }
         }
@@ -72,7 +76,6 @@ public static class SceneCollectionManager {
         EnsureSceneInBuildSettings("Packages/com.erlend-eiken-oppedal.scenecollections/Runtime/EmptyScene.unity");
 
 #endif
-
 
         await SceneManager.LoadSceneAsync("EmptyScene"!, LoadSceneMode.Additive);
 
@@ -148,7 +151,7 @@ public static class SceneCollectionManager {
     }
 
     public static void LoadSceneCollectionEditor(SceneCollectionSO sceneCollectionSO) {
-        _currentSceneCollectionSO = sceneCollectionSO;
+        CurrentSceneCollection = sceneCollectionSO;
 
         ActiveScenes.Clear();
 
