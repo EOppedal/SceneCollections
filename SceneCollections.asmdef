@@ -1,6 +1,6 @@
 {
     "name": "SceneCollections",
-    "rootNamespace": "",
+    "rootNamespace": "SceneCollections",
     "references": [
         "GUID:caca889fed6088d40b22c2d7e2909c31",
         "GUID:610a8d0a178cb3044a9181f97bbb9b16",
