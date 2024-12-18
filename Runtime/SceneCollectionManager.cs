@@ -78,7 +78,6 @@ namespace SceneCollections {
             }
 
             EnsureSceneInBuildSettings("Packages/com.erlend-eiken-oppedal.scenecollections/Runtime/EmptyScene.unity");
-
 #endif
 
             await SceneManager.LoadSceneAsync("EmptyScene"!, LoadSceneMode.Additive);
@@ -89,13 +88,14 @@ namespace SceneCollections {
 
             await LoadAllScenesInCollection(sceneCollectionSO);
 
-            SetActiveScene();
+            SetActiveSceneFromActiveScenes();
 
             await SceneManager.UnloadSceneAsync("EmptyScene");
 
             callback?.Invoke();
         }
 
+        #region ---Unloading---
         private static async Task UnloadLoadedScenes(SceneCollectionSO.SceneInstance[] notAllowedPersistentScenes) {
             var unloadTasks = new List<Task>();
 
@@ -117,6 +117,18 @@ namespace SceneCollections {
             await Task.WhenAll(unloadTasks);
         }
 
+        private static Task UnloadSceneAsync(Scene scene) {
+            var operation = SceneManager.UnloadSceneAsync(scene);
+
+            if (operation == null) return Task.CompletedTask;
+
+            var tcs = new TaskCompletionSource<bool>();
+            operation.completed += _ => tcs.SetResult(true);
+            return tcs.Task;
+        }
+        #endregion
+
+        #region ---Loading---
         private static async Task LoadAllScenesInCollection(SceneCollectionSO sceneCollectionSO) {
             var loadTasks = new List<Task>();
 
@@ -132,14 +144,25 @@ namespace SceneCollections {
             await Task.WhenAll(loadTasks);
         }
 
-        private static void SetActiveScene() {
+        private static Task LoadSceneAsync(int buildIndex) {
+            var operation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
+
+            if (operation == null) return Task.CompletedTask;
+
+            var tcs = new TaskCompletionSource<bool>();
+            operation.completed += _ => tcs.SetResult(true);
+            return tcs.Task;
+        }
+        #endregion
+
+        private static void SetActiveSceneFromActiveScenes() {
             var activeScene = ActiveScenes.Where(sceneInstance => sceneInstance.activeScene).ToArray();
 
             if (activeScene.Length > 1) {
                 Debug.LogWarning($"[{nameof(SceneCollectionManager)}] More than one Active Scenes");
             }
 
-            var activeSceneInstance = activeScene[0];
+            var activeSceneInstance = activeScene.Last();
             SceneManager.SetActiveScene(activeSceneInstance.LoadedScene);
             Debug.Log($"[{nameof(SceneCollectionManager)}] Set Active Scene: {activeSceneInstance.Name}");
         }
@@ -150,26 +173,6 @@ namespace SceneCollections {
             }
 
             ActiveScenes.Add(sceneInstance);
-        }
-
-        private static Task UnloadSceneAsync(Scene scene) {
-            var operation = SceneManager.UnloadSceneAsync(scene);
-
-            if (operation == null) return Task.CompletedTask;
-
-            var tcs = new TaskCompletionSource<bool>();
-            operation.completed += _ => tcs.SetResult(true);
-            return tcs.Task;
-        }
-
-        private static Task LoadSceneAsync(int buildIndex) {
-            var operation = SceneManager.LoadSceneAsync(buildIndex, LoadSceneMode.Additive);
-
-            if (operation == null) return Task.CompletedTask;
-
-            var tcs = new TaskCompletionSource<bool>();
-            operation.completed += _ => tcs.SetResult(true);
-            return tcs.Task;
         }
 
 #if UNITY_EDITOR
@@ -184,7 +187,7 @@ namespace SceneCollections {
 
             if (!isSceneInBuildSettings) {
                 var newScenes = new EditorBuildSettingsScene[scenes.Length + 1];
-                for (int i = 0; i < scenes.Length; i++) {
+                for (var i = 0; i < scenes.Length; i++) {
                     newScenes[i] = scenes[i];
                 }
 
@@ -243,14 +246,6 @@ namespace SceneCollections {
 
             Debug.Log("Adding scene");
         }
-
-        // private static IEnumerable<Scene> GetAllActiveScenes() {
-        //     var sceneCount = SceneManager.sceneCount;
-        //
-        //     for (var i = 0; i < sceneCount; i++) {
-        //         yield return SceneManager.GetSceneAt(i);
-        //     }
-        // }
 #endif
     }
 }
