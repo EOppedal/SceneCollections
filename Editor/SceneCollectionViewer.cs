@@ -42,8 +42,8 @@ namespace SceneCollectionViewer {
         }
 
         private void Populate() {
-            var sceneCollections = Directory.GetFiles(FolderPath);
-            //var debugLoggers = ScrubUtils.GetAllScrubsInResourceFolder<SceneCollectionSO>(FolderName);
+            var sceneCollections = Directory.GetFiles(FolderPath).Where(file => file.EndsWith(".asset")).ToArray();
+            
             foreach (var sceneCollection in sceneCollections) {
                 CreateElements(AssetDatabase.LoadAssetAtPath<SceneCollectionSO>(sceneCollection));
             }
