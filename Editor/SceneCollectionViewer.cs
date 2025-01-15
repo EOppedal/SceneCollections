@@ -1,5 +1,7 @@
 #if UNITY_EDITOR
+using System;
 using System.IO;
+using System.Linq;
 using SceneCollections;
 using UnityEditor;
 using UnityEngine;
@@ -15,13 +17,13 @@ namespace SceneCollectionViewer {
         private VisualElement _container;
 
         private const string FolderName = "SceneCollections";
-        private const string ResourcesPath = "Assets/Resources";
+        private const string ResourcesPath = "Assets";
         private const string IconPath = "";
+        private static string FolderPath => Path.Join(ResourcesPath, FolderName);
 
         static SceneCollectionViewer() {
             if (!Directory.Exists(ResourcesPath)) Directory.CreateDirectory(ResourcesPath);
-            var targetPath = Path.Join(ResourcesPath, FolderName);
-            if (!Directory.Exists(targetPath)) Directory.CreateDirectory(targetPath);
+            if (!Directory.Exists(FolderPath)) Directory.CreateDirectory(FolderPath);
         }
 
         [MenuItem("Tools/SceneCollections")]
@@ -40,9 +42,10 @@ namespace SceneCollectionViewer {
         }
 
         private void Populate() {
-            var debugLoggers = ScrubUtils.GetAllScrubsInResourceFolder<SceneCollectionSO>(FolderName);
-            foreach (var debugLogger in debugLoggers) {
-                CreateElements(debugLogger);
+            var sceneCollections = Directory.GetFiles(FolderPath);
+            //var debugLoggers = ScrubUtils.GetAllScrubsInResourceFolder<SceneCollectionSO>(FolderName);
+            foreach (var sceneCollection in sceneCollections) {
+                CreateElements(AssetDatabase.LoadAssetAtPath<SceneCollectionSO>(sceneCollection));
             }
         }
 
