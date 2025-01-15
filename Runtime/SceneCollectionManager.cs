@@ -16,7 +16,7 @@ namespace SceneCollections {
         #region ---Fields---
         private const string SOFolder = "SceneCollections";
         private const string SOName = "SceneCollectionManagerSO";
-        private const string ResourcesPath = "Assets/Resources";
+        private const string ResourcesPath = "Assets";
 
         private static SceneCollectionManagerSO SceneCollectionManagerSO {
             get {
