@@ -45,7 +45,9 @@ namespace SceneCollectionViewer {
             var sceneCollections = Directory.GetFiles(FolderPath).Where(file => file.EndsWith(".asset")).ToArray();
             
             foreach (var sceneCollection in sceneCollections) {
-                CreateElements(AssetDatabase.LoadAssetAtPath<SceneCollectionSO>(sceneCollection));
+                var asset = AssetDatabase.LoadAssetAtPath<SceneCollectionSO>(sceneCollection);
+                if (asset == null) continue;
+                CreateElements(asset);
             }
         }
 
