@@ -130,18 +130,19 @@ namespace SceneCollections {
 
         #region ---Loading---
         private static async Task LoadAllScenesInCollection(SceneCollectionSO sceneCollectionSO) {
-            var loadTasks = new List<Task>();
+            // var loadTasks = new List<Task>();
 
             foreach (var sceneInstance in sceneCollectionSO.scenes) {
                 if (ActiveScenes.Any(x => x.BuildIndex == sceneInstance.BuildIndex)) continue;
                 
-                loadTasks.Add(LoadSceneAsync(sceneInstance.BuildIndex));
+                // loadTasks.Add(LoadSceneAsync(sceneInstance.BuildIndex));
+                await LoadSceneAsync(sceneInstance.BuildIndex);
                 Debug.Log($"[{nameof(SceneCollectionManager)}] Loading: {sceneInstance.Name}");
 
                 AddSceneInstanceToLists(sceneInstance);
             }
 
-            await Task.WhenAll(loadTasks);
+            // await Task.WhenAll(loadTasks);
         }
 
         private static Task LoadSceneAsync(int buildIndex) {
