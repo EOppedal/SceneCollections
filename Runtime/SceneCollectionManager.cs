@@ -98,16 +98,7 @@ namespace SceneCollections {
         #region ---Unloading---
         private static async Task UnloadLoadedScenes(SceneCollectionSO.SceneInstance[] notAllowedPersistentScenes) {
             // var unloadTasks = new List<Task>();
-
-            foreach (var sceneInstance in notAllowedPersistentScenes) {
-                foreach (var instance in PersistentScenes.Where(x => x.LoadedScene == sceneInstance.LoadedScene)) {
-                    PersistentScenes.Remove(instance);
-                    // unloadTasks.Add(UnloadSceneAsync(instance.LoadedScene));
-                    await UnloadSceneAsync(instance.LoadedScene);
-                    ActiveScenes.Remove(instance);
-                }
-            }
-
+            
             foreach (var sceneInstance in ActiveScenes.ToArray()) {
                 if (sceneInstance.persistentScene) continue;
 
@@ -117,6 +108,15 @@ namespace SceneCollections {
                 ActiveScenes.Remove(sceneInstance);
             }
 
+            foreach (var sceneInstance in notAllowedPersistentScenes) {
+                foreach (var instance in PersistentScenes.Where(x => x.LoadedScene == sceneInstance.LoadedScene)) {
+                    // unloadTasks.Add(UnloadSceneAsync(instance.LoadedScene));
+                    await UnloadSceneAsync(instance.LoadedScene);
+                    PersistentScenes.Remove(instance);
+                    ActiveScenes.Remove(instance);
+                }
+            }
+            
             // await Task.WhenAll(unloadTasks);
         }
 
