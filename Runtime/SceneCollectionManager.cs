@@ -66,7 +66,7 @@ namespace SceneCollections {
 
         public static void ClearActiveScenes() => ActiveScenes.Clear();
 
-        public static async Task LoadSceneCollectionAsync(SceneCollectionSO sceneCollectionSO, Action callback = null) {
+        public static async Awaitable LoadSceneCollectionAsync(SceneCollectionSO sceneCollectionSO, Action callback = null) {
 #if UNITY_EDITOR
             if (ActiveScenes.Count == 0) {
                 Debug.LogWarning("*** No ActiveScenes! ***");
@@ -96,39 +96,38 @@ namespace SceneCollections {
         }
 
         #region ---Unloading---
-        private static async Task UnloadLoadedScenes(SceneCollectionSO.SceneInstance[] notAllowedPersistentScenes) {
-            // var unloadTasks = new List<Task>();
+        private static Task UnloadLoadedScenes(SceneCollectionSO.SceneInstance[] notAllowedPersistentScenes) {
+            var unloadTasks = new List<Task>();
             
             foreach (var sceneInstance in ActiveScenes.ToArray()) {
-                if (sceneInstance.persistentScene) continue;
-
-                await UnloadSceneAsync(sceneInstance.LoadedScene);
-                // unloadTasks.Add(UnloadSceneAsync(sceneInstance.LoadedScene));
-                Debug.Log($"[{nameof(SceneCollectionManager)}] Unloading: {sceneInstance.Name}");
-                ActiveScenes.Remove(sceneInstance);
-            }
-
-            foreach (var sceneInstance in notAllowedPersistentScenes) {
-                foreach (var instance in PersistentScenes.Where(x => x.LoadedScene == sceneInstance.LoadedScene)) {
-                    // unloadTasks.Add(UnloadSceneAsync(instance.LoadedScene));
-                    await UnloadSceneAsync(instance.LoadedScene);
-                    PersistentScenes.Remove(instance);
-                    ActiveScenes.Remove(instance);
+                if (sceneInstance.persistentScene) {
+                    if (notAllowedPersistentScenes.Contains(sceneInstance)) {
+                        PersistentScenes.Remove(sceneInstance);
+                    }
+                    else {
+                        continue;
+                    }
                 }
+                
+                ActiveScenes.Remove(sceneInstance);
+
+                unloadTasks.Add(UnloadSceneAsync(sceneInstance.LoadedScene));
+                
+                Debug.Log($"[{nameof(SceneCollectionManager)}] Unloading: {sceneInstance.Name}");
             }
-            
-            // await Task.WhenAll(unloadTasks);
+
+            return Task.WhenAll(unloadTasks);
         }
 
         private static Task UnloadSceneAsync(Scene scene) {
             var operation = SceneManager.UnloadSceneAsync(scene);
-
             if (operation == null) return Task.CompletedTask;
 
-            var tcs = new TaskCompletionSource<bool>();
+            var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
             operation.completed += _ => tcs.SetResult(true);
             return tcs.Task;
         }
+
         #endregion
 
         #region ---Loading---
@@ -138,11 +137,10 @@ namespace SceneCollections {
             foreach (var sceneInstance in sceneCollectionSO.scenes) {
                 if (ActiveScenes.Any(x => x.BuildIndex == sceneInstance.BuildIndex)) continue;
                 
+                AddSceneInstanceToLists(sceneInstance);
                 // loadTasks.Add(LoadSceneAsync(sceneInstance.BuildIndex));
                 await LoadSceneAsync(sceneInstance.BuildIndex);
                 Debug.Log($"[{nameof(SceneCollectionManager)}] Loading: {sceneInstance.Name}");
-
-                AddSceneInstanceToLists(sceneInstance);
             }
 
             // await Task.WhenAll(loadTasks);
