@@ -18,7 +18,6 @@ namespace SceneCollections {
         private const string SOName = "SceneCollectionManagerSO";
         private const string ResourcesPath = "Assets";
         
-        private const string SceneCollectionManagerSOPath = SOFolder + "/" + SOName + ".asset";
         private const string EmptyScenePath = SOFolder + "/" + "EmptyScene";
 
         private static SceneCollectionManagerSO SceneCollectionManagerSO {
@@ -82,9 +81,9 @@ namespace SceneCollections {
             
             var emptyScenePath = Resources.Load(EmptyScenePath, typeof(Scene)) != null 
                 ? EmptyScenePath 
-                : "Packages/com.erlend-eiken-oppedal.scenecollections/Runtime/EmptyScene.unity";
+                : "Packages/com.erlend-eiken-oppedal.scenecollections/Runtime/EmptyScene";
 
-            EnsureSceneInBuildSettings(emptyScenePath);
+            EnsureSceneInBuildSettings(emptyScenePath + ".unity");
 #endif
 
             await SceneManager.LoadSceneAsync("EmptyScene"!, LoadSceneMode.Additive);
