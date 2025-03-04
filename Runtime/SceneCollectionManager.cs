@@ -79,12 +79,12 @@ namespace SceneCollections {
                 }
             }
             
-            var emptyScene = Resources.Load(EmptyScenePath, typeof(Scene));
-
-            EnsureSceneInBuildSettings(emptyScene.name + ".unity");
+            // var emptyScene = Resources.Load(EmptyScenePath, typeof(Scene));
+            //
+            // EnsureSceneInBuildSettings(emptyScene.name + ".unity");
 #endif
 
-            await SceneManager.LoadSceneAsync("EmptyScene"!, LoadSceneMode.Additive);
+            await SceneManager.LoadSceneAsync(SceneCollectionManagerSO.emptyScene.BuildIndex, LoadSceneMode.Additive);
             var activeScene = SceneManager.GetSceneByName("EmptyScene");
             SceneManager.SetActiveScene(activeScene);
 
@@ -94,7 +94,7 @@ namespace SceneCollections {
 
             SetActiveSceneFromActiveScenes();
 
-            await SceneManager.UnloadSceneAsync("EmptyScene");
+            await SceneManager.UnloadSceneAsync(SceneCollectionManagerSO.emptyScene.BuildIndex);
 
             callback?.Invoke();
         }
