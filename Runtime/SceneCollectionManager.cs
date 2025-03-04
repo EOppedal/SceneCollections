@@ -79,9 +79,9 @@ namespace SceneCollections {
                 }
             }
             
-            var emptyScenePath = Resources.Load(EmptyScenePath, typeof(Scene));
+            var emptyScene = Resources.Load(EmptyScenePath, typeof(Scene));
 
-            EnsureSceneInBuildSettings(emptyScenePath.name + ".unity");
+            EnsureSceneInBuildSettings(emptyScene.name + ".unity");
 #endif
 
             await SceneManager.LoadSceneAsync("EmptyScene"!, LoadSceneMode.Additive);
