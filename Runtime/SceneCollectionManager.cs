@@ -105,7 +105,7 @@ namespace SceneCollections {
             
             foreach (var sceneInstance in ActiveScenes.ToArray()) {
                 if (sceneInstance.persistentScene) {
-                    if (notAllowedPersistentScenes.Any(x => x.name == sceneInstance.name)) {
+                    if (notAllowedPersistentScenes.Any(x => x.name == sceneInstance.Name)) {
                         PersistentScenes.Remove(sceneInstance);
                     }
                     else {
