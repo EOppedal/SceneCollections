@@ -79,9 +79,7 @@ namespace SceneCollections {
                 }
             }
             
-            var emptyScenePath = Resources.Load(EmptyScenePath, typeof(Scene)) != null 
-                ? EmptyScenePath 
-                : "Packages/com.erlend-eiken-oppedal.scenecollections/Runtime/EmptyScene";
+            var emptyScenePath = Resources.Load(EmptyScenePath, typeof(Scene));
 
             EnsureSceneInBuildSettings(emptyScenePath + ".unity");
 #endif
